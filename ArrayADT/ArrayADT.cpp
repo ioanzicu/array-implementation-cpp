@@ -5,20 +5,64 @@
 
 using namespace std;
 
-struct Array {
+class Array {
+private:
     int *A;
     int size;
     int length;
+    void Swap(int* x, int* y);
+
+public:
+    Array() {
+        size = 10;
+        length = 0;
+        A = new int[size];
+    }
+    Array(int sz) {
+        size = sz;
+        length = 0;
+        A = new int[size];
+
+    }
+    ~Array() {
+        delete []A;
+    }
+    void Display();
+    void Append(int value);
+    void Insert(int index, int value);
+    int Delete(int index);
+    int LinearSearch(int key);
+    int RecBinarySearch(int begin, int end, int key);
+    int ItrBinarySearch(int key);
+    int Get(int index);
+    void Set(int index, int value);
+    int Min();
+    int Max();
+    int Sum();
+    double Avg();
+    void Reverse();
+    void AReverse();
+    void Shift();
+    void Unshift();
+    void RRotate();
+    void LRotate();
+    void InsertSort(int value);
+    bool isSorted();
+    void Rearrange();
+    Array* Merge(Array arr2);
+    Array* Union(Array arr2);
+    Array* Intersection(Array arr2);
+    Array* Difference(Array arr2);
 };
 
 // O (n)
-void Display(struct Array arr) {
+void Array::Display() {
     int i;
 
-    if (arr.length > 0) {
+    if (length > 0) {
         cout << "\nElements are: \n";
-        for (i = 0; i < arr.length; ++i)
-            cout << arr.A[i] << " ";
+        for (i = 0; i < length; ++i)
+            cout << A[i] << " ";
     }
     else {
         cout << "\nArray is empty \n";
@@ -27,59 +71,59 @@ void Display(struct Array arr) {
 }
 
 // O (1)
-void Append(struct Array *arr, int value) {
-    if (arr->length < arr->size) {
-        arr->A[arr->length] = value;
-        arr->length++;
+void Array::Append(int value) {
+    if (length < size) {
+        A[length] = value;
+        length++;
     }
 }
 
 // O (n) - Max | O (1) - Min
-void Insert(struct Array *arr, int index, int value) {
+void Array::Insert(int index, int value) {
     int i;
-    if (index >= 0 && index <= arr->length) {
-        for (i = arr->length; i > index; i--) 
-            arr->A[i] = arr->A[i - 1];
+    if (index >= 0 && index <= length) {
+        for (i = length; i > index; i--) 
+            A[i] = A[i - 1];
         
-        arr->A[index] = value;
-        arr->length++;
+        A[index] = value;
+        length++;
     }
 }
 
 // O (n) - Max | O (1) - Min
-int Delete(struct Array *arr, int index) {
+int Array::Delete(int index) {
     int i, value = 0;
-    if (index >= 0 && index < arr->length) {
-        value = arr->A[index];
+    if (index >= 0 && index < length) {
+        value = A[index];
 
-        for (i = index; i < arr->length - 1; i++) 
-            arr->A[i] = arr->A[i + 1];
+        for (i = index; i < length - 1; i++) 
+            A[i] = A[i + 1];
         
-        arr->length--;
+        length--;
     }
 
     return value;
 }
 
-void Swap(int* x, int* y) {
+void Array::Swap(int* x, int* y) {
     int temp = *x;
     *x = *y;
     *y = temp;
 }
 
 // O (n) - Max | O (1) - Min | O (n) - Avg
-int LinearSearch(struct Array* arr, int key) {
+int Array::LinearSearch(int key) {
     int i;
-    for (i = 0; i < arr->length; ++i)
-        if (arr->A[i] == key) {
+    for (i = 0; i < length; ++i)
+        if (A[i] == key) {
             /* 
             // Transposition Method
-            Swap(&arr->A[i], &arr->A[i - 1]);
+            Swap(&A[i], &A[i - 1]);
             return i;
             */
 
             // Transposition Method
-            Swap(&arr->A[i], &arr->A[0]);
+            Swap(&A[i], &A[0]);
             return 0;
         }
 
@@ -87,34 +131,34 @@ int LinearSearch(struct Array* arr, int key) {
 }
 
 // Recursive Binary Search - O (log(n)) - Tail Recursion
-int RecBinarySearch(struct Array arr, int begin, int end, int key) {
+int Array::RecBinarySearch(int begin, int end, int key) {
     int middle;
   
     if (begin <= end) {
         middle = (begin + end) / 2;
-        if (key == arr.A[middle])
+        if (key == A[middle])
             return middle;
-        else if (key < arr.A[middle])
-            return RecBinarySearch(arr, begin, middle - 1, key);
-        else if (key > arr.A[middle])
-            return RecBinarySearch(arr, middle + 1, end, key);
+        else if (key < A[middle])
+            return RecBinarySearch(begin, middle - 1, key);
+        else if (key > A[middle])
+            return RecBinarySearch(middle + 1, end, key);
     }
 
     return -1;
 }
 
-int ItrBinarySearch(struct Array arr, int key)  {
+int Array::ItrBinarySearch(int key) {
     int begin, middle, end;
     begin = 0;
-    end = arr.length - 1;
+    end = length - 1;
 
     while (begin <= end) {
         middle = (begin + end) / 2;
-        if (key == arr.A[middle])
+        if (key == A[middle])
             return middle;
-        else if (key < arr.A[middle])
+        else if (key < A[middle])
             end = middle - 1;
-        else if (key > arr.A[middle])
+        else if (key > A[middle])
             begin = middle + 1;
     }
 
@@ -122,253 +166,250 @@ int ItrBinarySearch(struct Array arr, int key)  {
 }
 
 // O (1)
-int Get(struct Array arr, int index) {
-    if (index >= 0 && index < arr.length)
-        return arr.A[index];
+int Array::Get(int index) {
+    if (index >= 0 && index < length)
+        return A[index];
 
     return -1;
 }
 
 // O (1)
-void Set(struct Array* arr, int index, int value) {
-    if (index >= 0 && index < arr->length)
-        arr->A[index] = value;
+void Array::Set(int index, int value) {
+    if (index >= 0 && index < length)
+        A[index] = value;
 }
 
 // O (n)
-int Min(struct Array arr) {
-    int min = arr.A[0];
+int Array::Min() {
+    int min = A[0];
     int i;
-    for (i = 1; i < arr.length; ++i)
-        if (min > arr.A[i])
-            min = arr.A[i];
+    for (i = 1; i < length; ++i)
+        if (min > A[i])
+            min = A[i];
 
     return min;
 }
 
 // O (n)
-int Max(struct Array arr) {
-    int i, max = arr.A[0];
+int Array::Max() {
+    int i, max = A[0];
     
-    for (i = 1; i < arr.length; ++i)
-        if (max < arr.A[i])
-            max = arr.A[i];
+    for (i = 1; i < length; ++i)
+        if (max < A[i])
+            max = A[i];
 
     return max;
 }
 
 // O (n)
-int Sum(struct Array arr) {
+int Array::Sum() {
     int i, sum = 0;
 
-    for (i = 0; i < arr.length; ++i)
-        sum += arr.A[i];
+    for (i = 0; i < length; ++i)
+        sum += A[i];
 
     return sum;
 }
 
 // O (n)
-double Avg(struct Array arr) {
-    return (double)Sum(arr) / arr.length;
+double Array::Avg() {
+    return (double)Sum() / length;
 }
 
 // O (n)
-void Reverse(struct Array* arr) {
+void Array::Reverse() {
     int i;
-    int middle = arr->length / 2;
-    int last = arr->length - 1;
+    int middle = length / 2;
+    int last = length - 1;
 
     for (i = 0; i <= middle; ++i)
-        Swap(&arr->A[i], &arr->A[last - i]);
+        Swap(&A[i], &A[last - i]);
 }
 
 // O (n) - use additional array
-void AReverse(struct Array* arr) {
+void Array::AReverse() {
     int i, j = 0;
-    int* B = new int[arr->length];
+    int* B = new int[length];
 
-    for (i = arr->length - 1; i >= 0; --i, ++j)
-        B[j] = arr->A[i];
+    for (i = length - 1; i >= 0; --i, ++j)
+        B[j] = A[i];
 
-    for (i = 0; i < arr->length; ++i)
-        arr->A[i] = B[i];
+    for (i = 0; i < length; ++i)
+        A[i] = B[i];
 }
 
 // O (n) - Left Shift (remove first element)
-void Shift(struct Array* arr) {
+void Array::Shift() {
     int i;
     
-    if (arr->length > 0) {
-        for (i = 0; i < arr->length; ++i)
-            arr->A[i] = arr->A[i + 1];
+    if (length > 0) {
+        for (i = 0; i < length; ++i)
+            A[i] = A[i + 1];
 
-        arr->length--;
+        length--;
     }
 }
 
 // O (1) - Right Shift (remove last element)
-void Unshift(struct Array* arr) {
+void Array::Unshift() {
     int i;
 
-    if (arr->length > 0) {
-        arr->A[arr->length - 1] = 0;
+    if (length > 0) {
+        A[length - 1] = 0;
 
-        arr->length--;
+        length--;
     }
 }
 
 // O (n) - Rotate to Right
-void RRotate(struct Array* arr) {
+void Array::RRotate() {
     int i, first;
 
-    if (arr->length > 0) {
-        first = arr->A[0];
+    if (length > 0) {
+        first = A[0];
 
-        for (i = 0; i < arr->length; ++i)
-            arr->A[i] = arr->A[i + 1];
+        for (i = 0; i < length; ++i)
+            A[i] = A[i + 1];
 
-        arr->A[arr->length - 1] = first;
+        A[length - 1] = first;
     }
 }
 
 // O (n) - Rotate to Left 
-void LRotate(struct Array* arr) {
+void Array::LRotate() {
     int i, last;
 
-    if (arr->length > 0) {
-        last = arr->A[arr->length - 1];
+    if (length > 0) {
+        last = A[length - 1];
 
-        for (i = arr->length - 1; i >= 0; --i)
-            arr->A[i] = arr->A[i - 1];
+        for (i = length - 1; i >= 0; --i)
+            A[i] = A[i - 1];
         
-        arr->A[0] = last;
+        A[0] = last;
     }
 }
 
 // O (n)
-void InsertSort(struct Array* arr, int value) {
-    int i = arr->length - 1;
-    if (arr->length == arr->size)
+void Array::InsertSort(int value) {
+    int i = length - 1;
+    if (length == size)
         return;
-    while (i >= 0 && arr->A[i] > value) {
-        arr->A[i + 1] = arr->A[i];
+    while (i >= 0 && A[i] > value) {
+        A[i + 1] = A[i];
         i--;
     }
-    arr->A[i + 1] = value;
-    arr->length++;
+    A[i + 1] = value;
+    length++;
 }
 
 // O (n) - Max | O (1) - Min 
-bool isSorted(struct Array arr) {
+bool Array::isSorted() {
     int i;
-    for (i = 0; i < arr.length - 1; ++i)
-        if (arr.A[i] > arr.A[i + 1])
+    for (i = 0; i < length - 1; ++i)
+        if (A[i] > A[i + 1])
             return false;
     return true;
 }
 
 // O (n) - Separate Negative from the Positive Values
-void Rearrange(struct Array* arr) {
+void Array::Rearrange() {
     int i = 0;
-    int j = arr->length - 1;
+    int j = length - 1;
 
     while (i < j) {
-        while (arr->A[i] < 0) { i++; }
-        while (arr->A[j] >= 0) { j--; }
+        while (A[i] < 0) { i++; }
+        while (A[j] >= 0) { j--; }
         if (i < j) 
-            Swap(&arr->A[i], &arr->A[j]);
+            Swap(&A[i], &A[j]);
     }
 }
 
 // O (m + n) - Teta
-struct Array* Merge(struct Array* arr1, struct Array* arr2) {
+Array* Array::Merge(struct Array arr2) {
     int i = 0;
     int j = 0;
     int k = 0;
-    struct Array* arr3 = (struct Array*)malloc(sizeof(struct Array));
+    Array* arr3 = new Array(length + arr2.length);
 
-    while (i < arr1->length && j < arr2->length) {
-        if (arr1->A[i] < arr2->A[j])
-            arr3->A[k++] = arr1->A[i++];
+    while (i < length && j < arr2.length) {
+        if (A[i] < arr2.A[j])
+            arr3->A[k++] = A[i++];
         else
-            arr3->A[k++] = arr2->A[j++];
+            arr3->A[k++] = arr2.A[j++];
     }
 
-    for (; i < arr1->length; ++i)
-        arr3->A[k++] = arr1->A[i];
+    for (; i < length; ++i)
+        arr3->A[k++] = A[i];
 
-    for (; j < arr2->length; ++j)
-        arr3->A[k++] = arr2->A[j];
+    for (; j < arr2.length; ++j)
+        arr3->A[k++] = arr2.A[j];
 
-    arr3->length = arr1->length + arr2->length;
-    arr3->size = 10;
+    arr3->length = length + arr2.length;
     
     return arr3;
 }
 
 // O (m + n) - Teta
-struct Array* Union(struct Array* arr1, struct Array* arr2) {
+Array* Array::Union(Array arr2) {
     int i = 0;
     int j = 0;
-    int k = 0;
-    struct Array* arr3 = (struct Array*)malloc(sizeof(struct Array));
+    int k = 0;  
+    Array* arr3 = new Array(length + arr2.length);
 
-    while (i < arr1->length && j < arr2->length) {
-        if (arr1->A[i] < arr2->A[j])
-            arr3->A[k++] = arr1->A[i++];
-        else if (arr2->A[j] < arr1->A[i])
-            arr3->A[k++] = arr2->A[j++];
+    while (i < length && j < arr2.length) {
+        if (A[i] < arr2.A[j])
+            arr3->A[k++] = A[i++];
+        else if (arr2.A[j] < A[i])
+            arr3->A[k++] = arr2.A[j++];
         else {
-            arr3->A[k++] = arr1->A[i++];
+            arr3->A[k++] = A[i++];
             j++;
         }
     }
 
-    for (; i < arr1->length; ++i)
-        arr3->A[k++] = arr1->A[i];
+    for (; i < length; ++i)
+        arr3->A[k++] = A[i];
 
-    for (; j < arr2->length; ++j)
-        arr3->A[k++] = arr2->A[j];
+    for (; j < arr2.length; ++j)
+        arr3->A[k++] = arr2.A[j];
 
     arr3->length = k;
-    arr3->size = 10;
 
     return arr3;
 }
 
 // O (m + n) - Teta
-struct Array* Intersection(struct Array* arr1, struct Array* arr2) {
+Array* Array::Intersection(Array arr2) {
     int i, j, k;
     i = j = k = 0;
-    struct Array* arr3 = (struct Array*)malloc(sizeof(struct Array));
+    Array* arr3 = new Array(length + arr2.length);
 
-    while (i < arr1->length && j < arr2->length) {
-        if (arr1->A[i] < arr2->A[j])
+    while (i < length && j < arr2.length) {
+        if (A[i] < arr2.A[j])
             i++;
-        else if (arr2->A[j] < arr1->A[i])
+        else if (arr2.A[j] < A[i])
             j++;
-        else if(arr1->A[i] == arr2->A[j]) {
-            arr3->A[k++] = arr1->A[i++];
+        else if(A[i] == arr2.A[j]) {
+            arr3->A[k++] = A[i++];
             j++;
         }
     }
 
     arr3->length = k;
-    arr3->size = 10;
 
     return arr3;
 }
 
 // O (m + n) - Teta
-struct Array* Difference(struct Array* arr1, struct Array* arr2) {
+Array* Array::Difference(Array arr2) {
     int i, j, k;
     i = j = k = 0;
-    struct Array* arr3 = (struct Array*)malloc(sizeof(struct Array));
-
-    while (i < arr1->length && j < arr2->length) {
-        if (arr1->A[i] < arr2->A[j])
-            arr3->A[k++] = arr1->A[i++];
-        else if (arr2->A[j] < arr1->A[i])
+    Array* arr3 = new Array(length + arr2.length);
+    
+    while (i < length && j < arr2.length) {
+        if (A[i] < arr2.A[j])
+            arr3->A[k++] = A[i++];
+        else if (arr2.A[j] < A[i])
            j++;
         else {
             i++;
@@ -376,24 +417,22 @@ struct Array* Difference(struct Array* arr1, struct Array* arr2) {
         }
     }
 
-    for (; i < arr1->length; ++i)
-        arr3->A[k++] = arr1->A[i];
+    for (; i < length; ++i)
+        arr3->A[k++] = A[i];
 
     arr3->length = k;
-    arr3->size = 10;
-
+    
     return arr3;
 }
 
 int main()
 {
-    struct Array arr1;
-    int ch, value, index;
+    Array* arr1;
+    int ch, value, index, size;
 
     cout << "Enter Size of Array: ";
-    cin >> arr1.size;
-    arr1.A = (int*)malloc(arr1.size * sizeof(int));
-    arr1.length = 0;
+    cin >> size;
+    arr1 = new Array(size);
 
     do {
         cout << "\n\nMenu\n";
@@ -413,89 +452,35 @@ int main()
         case 1:
             cout << "Enter the value to be inserted: ";
             cin >> value;
-            cout << "Enter the index to be inserted: ";
+            cout << "Enter the index: ";
             cin >> index;
-            Insert(&arr1, index, value);
+            arr1->Insert(index, value);
             break;
         case 2:
             cout << "Enter the index: ";
             cin >> index;
-            value = Delete(&arr1, index);
+            value = arr1->Delete(index);
             cout << "Element " << value << " was deleted." << endl;
             break;
         case 3:
             cout << "Enter element to search ";
             cin >> value;
-            index = LinearSearch(&arr1, value);
+            index = arr1->LinearSearch(value);
             cout << "Element's index: " << index << endl;
             break;
         case 4:
-            cout << "Sum is " << Sum(arr1) << endl;
+            cout << "Sum is " << arr1->Sum() << endl;
             break;
         case 5:
-            Display(arr1);
+            arr1->Display();
             break;
         case 6:
             cout << "The Array was Reversed" << endl;
-            Reverse(&arr1);
+            arr1->Reverse();
             break;
         default:
-            cout << "Bye!!!" << ch << endl;
+            cout << "Bye!!! " << ch << endl;
             break;
         }
-    } while (ch > 1 && ch < 7);
-
-
-
-
-
-    // struct Array arr = { {2, 3, 4, 5, 6, 9}, 20, 6 };
-
-    //Append(&arr, 10);
-    //Insert(&arr, 2, 10);
-    //cout << "\nDeleted value " << Delete(&arr, 0);
-    //cout << "\nLinear Search: " << LinearSearch(&arr, 5) << endl;
-    //cout << "\nBinary Search: " << RecBinarySearch(arr, 0, arr.length, 6) << endl;
-    //cout << "\nBinary Search: " << ItrBinarySearch(arr, 6) << endl;
-
-    //Display(arr);
-    //cout << Get(arr, 3) << endl;
-    //Set(&arr, 3, 39);
-    
-    //Display(arr);
-    
-    //cout << "Min " << Min(arr) << endl;
-    //cout << "Max " << Max(arr) << endl;
-    //cout << "Sum " << Sum(arr) << endl;
-    //cout << "Average " << Avg(arr) << endl;
-
-    //Shift(&arr);
-    //Unshift(&arr);
-    
-    //Reverse(&arr);
-    //AReverse(&arr);
-    
-    //RRotate(&arr);
-    //LRotate(&arr);
-    
-    //InsertSort(&arr, 1);
-    //cout << isSorted(arr) << endl;
-    //Rearrange(&arr);
- 
-    /* Merge | Union | Set | Intersection */
-
-    /*struct Array arr1 = { {2, 6, 10, 15, 25}, 10, 5 };
-    struct Array arr2 = { {3, 6, 7, 15, 20}, 10, 5 };
-    struct Array* arr3;*/
-
-    //arr3 = Merge(&arr1, &arr2);
-    //arr3 = Union(&arr1, &arr2);
-    //arr3 = Intersection(&arr1, &arr2);
-    //arr3 = Difference(&arr1, &arr2);
-
-    //Display(*arr3);
-
-
-
-
+    } while (ch > 0 && ch < 7);
 }
